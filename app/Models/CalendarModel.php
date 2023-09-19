@@ -3,7 +3,8 @@ use CodeIgniter\Model;
 
 class CalendarModel extends Model{
     public function getAll(){
-         $Nombres = $this->db->query("SELECT id, title, description, start_date as 'start', end_date as 'end' FROM calendar");
+     //    $Nombres = $this->db->query("SELECT id, title, description, start_date 'start', end_date 'end' FROM calendar");
+         $Nombres = $this->db->query("SELECT id, title, description, color, start_date 'start', color 'selectcolor', start_date 'start_datetime', end_date 'end_datetime' FROM calendar");
          //$Nombres = $this->db->query("SELECT * FROM calendar");
         return $Nombres->getResult();
     }

@@ -8,27 +8,20 @@
 
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/main.min.css'); ?>">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>">
+
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.5/main.min.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.11.5/main.min.js"></script> -->
+     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script> -->
 
-
-    <!-- <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/style.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/font-awesome/css/font-awesome.min.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/fullcalendar/fullcalendar.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css'); ?>" -->
-
+    <script src="<?php echo base_url('assets/js/bootstrap.bundle.min.js'); ?>"></script>
     <script src="<?php echo base_url('assets/js/main.min.js'); ?>"></script>
     <script src="<?php echo base_url('assets/js/jquery.min.js'); ?>"></script>
     <script src="<?php echo base_url('assets/js/moment.min.js'); ?>"></script>
-    <!-- <script src="<?php echo base_url('assets/js/bootstrap.min.js'); ?>"></script>
-    <script src="<?php echo base_url('assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js'); ?>"></script> -->
-    <!-- <script src="<?php echo base_url('assets/plugins/fullcalendar/fullcalendar.js'); ?>"></script>  -->
 
     <script src="<?php echo base_url('assets/js/sweetalert2.all.min.js'); ?>"></script>
 </head>
@@ -78,17 +71,15 @@
                         </div>
 
                         <div class="form-floating mb-3">
-                            <!-- <input type="datetime-local" id="start" name="start" class="form-control"
-                                data-format="dd/MM/yyyy hh:mm">
-                            <label for="start" class="form-label">Fecha Inicio *</label> -->
-                            <input type="date" id="start" name="start" class="form-control">
-                            <label for="start" class="form-label">Fecha Inicio *</label>
+                            <input type="datetime-local" id="start_date" name="start_date" class="form-control"
+                                data-format="dd/mm/yyyy hh:mm">
+                            <label for="start_date" class="form-label">Fecha Inicio *</label> 
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input type="hidden" id="end" name="end" class="form-control"
-                                data-date-format="yyyy-mm-dd hh:mm">
-                            <!-- <label for="end" class="form-label">Fecha Fin</label> -->
+                            <input type="datetime-local" id="end_date" name="end_date" class="form-control"
+                                data-date-format="dd/mm/yyyy hh:mm">
+                            <label for="end_date" class="form-label">Fecha Fin</label>
                         </div>
 
                     </div>
@@ -127,12 +118,14 @@
                     document.getElementById('id').value = '';
                     eliminar.classList.add('d-none');
 
-                    var myDate = new Date();
+                    var myDate = info.dateStr;
+                    var myHhMm = moment().format('HH:mm');
+                    var DateFormat =myDate + ' ' + myHhMm;
 
                     document.getElementById('title').value = '';
                     document.getElementById('description').value = '';
-                    document.getElementById('start').value = moment(myDate).format("YYYY-MM-DD");// moment(myDate).format("YYYY-MM-DD HH:mm");
-                    document.getElementById('end').value = moment(myDate).format("YYYY-MM-DD HH:mm");
+                    document.getElementById('start_date').value = moment(DateFormat).format("YYYY-MM-DD HH:mm");// moment(myDate).format("YYYY-MM-DD HH:mm");
+                    document.getElementById('end_date').value = moment(DateFormat).add('hours',2).format("YYYY-MM-DD HH:mm");
                     document.getElementById('color').value = "#008000";
                     document.getElementById('btnAccion').textContent = 'Guardar';
                     document.getElementById('titulo').textContent = 'Citas';
@@ -140,28 +133,74 @@
                     myModal.show();
                 },
                 eventClick: function (info) {
-                    console.log(info);
+                 //   console.log(info);
                     eliminar.classList.remove('d-none');
                     document.getElementById('titulo').textContent = 'Actualizar Cita';
                     document.getElementById('btnAccion').textContent = 'Actualizar';
                     document.getElementById('id').value = info.event.id;
                     document.getElementById('title').value = info.event.title;
                     document.getElementById('description').value = info.event._def.extendedProps.description;
-                    document.getElementById('start').value = info.event.startStr;
-                    document.getElementById('end').value = info.event.end;
-                    document.getElementById('color').selectvalue = info.event.backgroundColor;
+
+                    var fecha = new Date(info.event._def.extendedProps.start_datetime);
+                    var anio = fecha.getFullYear();
+                    var mes = ('0' + (fecha.getMonth() + 1)).slice(-2);
+                    var dia = ('0' + fecha.getDate()).slice(-2);
+                    var horas = ('0' + fecha.getHours()).slice(-2);
+                    var minutos = ('0' + fecha.getMinutes()).slice(-2);
+                    var fechaFormateada = anio + '-' + mes + '-' + dia + ' ' + horas + ':' + minutos;
+
+                    document.getElementById('start_date').value = fechaFormateada;
+
+                    var fechaEnd = new Date(info.event._def.extendedProps.end_datetime);
+                    var anioEnd = fechaEnd.getFullYear();
+                    var mesEnd = ('0' + (fechaEnd.getMonth() + 1)).slice(-2);
+                    var diaEnd = ('0' + fechaEnd.getDate()).slice(-2);
+                    var horasEnd = ('0' + fechaEnd.getHours()).slice(-2);
+                    var minutosEnd = ('0' + fechaEnd.getMinutes()).slice(-2);
+                    var fechaFormateadaEnd = anioEnd + '-' + mesEnd + '-' + diaEnd + ' ' + horasEnd + ':' + minutosEnd;
+
+                    document.getElementById('end_date').value =fechaFormateadaEnd;
+                    document.getElementById('color').value = info.event._def.extendedProps.selectcolor;
 
                     myModal.show();
                 },
                 eventDrop: function (info) {
+                    console.log(info)
                     const id = info.event.id;
-                    const start = info.event.startStr;
+
+                    const currentDate = new Date(info.event._def.extendedProps.start_datetime);
+
+                    var start_hours = currentDate.getHours().length ==1? '0'+ currentDate.getHours(): currentDate.getHours();
+                    var start_minutes = currentDate.getMinutes().length ==1? '0'+ currentDate.getMinutes(): currentDate.getMinutes();
+
+                    var fechaStart= new Date(info.event.startStr);
+                    var anioStart = fechaStart.getFullYear();
+                    var mesStart = ('0' + (fechaStart.getMonth() + 1)).slice(-2);
+                    var diaStart = ('0' + fechaStart.getDate()).slice(-2);
+                    var horasStart = ('0' + start_hours).slice(-2);
+                    var minutosStart = ('0' + start_minutes).slice(-2);
+                    var fechaFormateada = anioStart + '-' + mesStart + '-' + diaStart + ' ' + horasStart + ':' + minutosStart;
+
+                    const currentDateEnd = new Date(info.event._def.extendedProps.end_datetime);
+                    var end_hours = currentDateEnd.getHours().length ==1? '0'+ currentDateEnd.getHours(): currentDateEnd.getHours();
+                    var end_minutes = currentDateEnd.getMinutes().length ==1? '0'+ currentDateEnd.getMinutes(): currentDateEnd.getMinutes();
+
+                    var fechaEnd = new Date(info.event.startStr);
+                    var anioEnd = fechaEnd.getFullYear();
+                    var mesEnd = ('0' + (fechaEnd.getMonth() + 1)).slice(-2);
+                    var diaEnd = ('0' + fechaEnd.getDate()).slice(-2);
+                    var horasEnd = ('0' + end_hours).slice(-2);
+                    var minutosEnd = ('0' + end_minutes).slice(-2);
+                    var fechaFormateadaEnd = anioEnd + '-' + mesEnd + '-' + diaEnd + ' ' + horasEnd + ':' + minutosEnd;
+
+
                     const url = BASE_URL + 'calendar/drop';
 
                     const http = new XMLHttpRequest();
                     const data = new FormData()
                     data.append('id', id);
-                    data.append('start', start);
+                    data.append('start_date', fechaFormateada);
+                    data.append('end_date', fechaFormateadaEnd);
 
                     http.open('POST', url, true);
                     http.send(data);
@@ -191,9 +230,8 @@
                 const title = document.getElementById('title').value;
                 const description = document.getElementById('description').value;
                 const color = document.getElementById('color').value;
-                const start = document.getElementById('start').value;
-                const end = document.getElementById('end').value;
-
+                const start = document.getElementById('start_date').value;
+                const end = document.getElementById('end_date').value;
 
                 if (title == '' || start == '' || color == '') {
                     Swal.fire(
@@ -206,7 +244,7 @@
                     const http = new XMLHttpRequest();
                     http.open('POST', url, true);
                     http.send(new FormData(frm));
-                    console.log(http);
+                  // console.log(http);
                     http.onreadystatechange = function () {
                         if (this.readyState == 4 && this.status == 200) {
                             //const respuesta = JSON.parse(this.responseText);
@@ -239,7 +277,7 @@
                     if (result.isConfirmed) {
                         //   const id = document.getElementById('id').value;
                         const url = BASE_URL + 'calendar/eliminar/' + document.getElementById('id').value;
-                        console.log(url);
+                        //console.log(url);
                         const http = new XMLHttpRequest();
                         http.open('GET', url, true);
                         http.send();

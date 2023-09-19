@@ -29,8 +29,8 @@ class CalendarController extends Controller
             "title" => $_POST['title'],
             "description" => $_POST['description'],
             "color" => $_POST['color'],
-            "start_date" => $_POST['start'],
-            "end_date" => $_POST['end']
+            "start_date" => $_POST['start_date'],
+            "end_date" => $_POST['end_date']
         ];
 
         $id = $_POST['id'];
@@ -89,7 +89,8 @@ class CalendarController extends Controller
 
     public function drop(){
         $datos = [
-            "start_date" => $_POST['start']
+            "start_date" => $_POST['start_date'],
+            "end_date" => $_POST['end_date']
         ];
         
         print_r( $datos );
